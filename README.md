@@ -4,7 +4,7 @@ The following packages are included
 
 * apache-2.4.38
 * GD library
-* Unzip library
+* Zip library
 * Composer
 * php7.4
 * php7.4-opcache
@@ -12,7 +12,7 @@ The following packages are included
 * php7.4-yaml
 * cron
 
-## 0. Dev dependencies
+## 0. Dev Dependencies
 
 - [Docker](https://www.docker.com/products/docker-desktop)
 - [Docker Compose](https://docs.docker.com/compose/overview/)
@@ -30,6 +30,12 @@ docker-compose up -d
 ```
 
 Open the URL `http://localhost:8000` to navigate to October CMS
+
+## 3. Shell
+
+```
+docker exec -it docker-october_web_1 sh
+```
 
 ### X. Destroy
 

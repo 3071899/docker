@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     git \
     cron \
+    vim \
+    nano \
     && docker-php-ext-install opcache \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
@@ -59,6 +61,13 @@ RUN curl -o octobercms-install.zip -X POST -SL http://octobercms.com/api/core/ge
     unzip octobercms-install.zip -d octobercms-install && \
     mv -T /var/www/octobercms-install /var/www/html && \
     rm octobercms-install.zip
+
+# Installs October CMS via composer
+# RUN composer create-project october/october --no-interaction --prefer-dist --no-scripts
+
+# Artisan commands
+WORKDIR /var/www/html
+RUN php artisan october:env
 
 # Creates cron job for maintenance scripts
 RUN (crontab -l; echo "* * * * * cd /var/www/html;/usr/local/bin/php artisan schedule:run 1>> /dev/null 2>&1") | crontab -

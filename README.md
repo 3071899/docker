@@ -10,6 +10,7 @@ The following packages are included
 * php7.4-opcache
 * php7.4-acpu
 * php7.4-yaml
+* vim + nano
 * cron
 
 ## 0. Dev Dependencies
@@ -34,7 +35,7 @@ Open the URL `http://localhost:8000` to navigate to October CMS
 ## 3. Shell
 
 ```
-docker exec -it docker-october_web_1 sh
+docker exec -it october sh
 ```
 
 ### X. Destroy

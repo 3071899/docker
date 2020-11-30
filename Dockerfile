@@ -13,10 +13,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libjpeg62-turbo-dev \
     libpng-dev \
     libyaml-dev \
+    libwebp-dev \
     libzip4 \
     libzip-dev \
     zlib1g-dev \
     libicu-dev \
+    libpq-dev \
+    libsqlite3-dev \
     g++ \
     git \
     cron \
@@ -25,9 +28,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install opcache \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install zip \
+    && docker-php-ext-install exif \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-install pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 
 # Sets recommended PHP.ini settings (https://secure.php.net/manual/en/opcache.installation.php)
@@ -65,6 +72,11 @@ RUN curl -o octobercms-install.zip -X POST -SL http://octobercms.com/api/core/ge
 # Installs October CMS via composer
 # RUN composer create-project october/october --no-interaction --prefer-dist --no-scripts
 
+# Adds SQLite database
+WORKDIR /var/www/html
+RUN touch storage/database.sqlite && \
+    chmod 666 storage/database.sqlite
+
 # Artisan commands
 WORKDIR /var/www/html
 RUN php artisan october:env
@@ -76,11 +88,11 @@ RUN (crontab -l; echo "* * * * * cd /var/www/html;/usr/local/bin/php artisan sch
 USER root
 
 # Copies init scripts
-# COPY docker-entrypoint.sh /entrypoint.sh
+COPY docker-entrypoint.sh /entrypoint.sh
 
 # Provides container inside image for data persistence
 VOLUME ["/var/www/html"]
 
-# ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 # CMD ["apache2-foreground"]
 CMD ["sh", "-c", "cron && apache2-foreground"]

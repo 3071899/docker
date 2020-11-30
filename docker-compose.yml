@@ -7,5 +7,7 @@ services:
     ports:
       - 8000:80
     environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=storage/database.sqlite
       # - APP_URL=https://octobercms.com/
       # - LINK_POLICY=secure

@@ -89,6 +89,7 @@ USER root
 
 # Copies init scripts
 COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Provides container inside image for data persistence
 VOLUME ["/var/www/html"]

@@ -63,11 +63,8 @@ USER www-data
 
 # Installs October CMS
 WORKDIR /var/www
-RUN curl -o octobercms-install.zip -X POST -SL http://octobercms.com/api/core/get?type=install && \
-    mkdir octobercms-install && \
-    unzip octobercms-install.zip -d octobercms-install && \
-    mv -T /var/www/octobercms-install /var/www/html && \
-    rm octobercms-install.zip
+RUN composer create-project october/october octobercms-install && \
+    mv -T /var/www/octobercms-install /var/www/html
 
 # Installs October CMS via composer
 # RUN composer create-project october/october --no-interaction --prefer-dist --no-scripts

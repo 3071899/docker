@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cron \
     vim \
     nano \
+    ssh-client \
     && docker-php-ext-install opcache \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
@@ -63,11 +64,8 @@ USER www-data
 
 # Installs October CMS
 WORKDIR /var/www
-RUN composer create-project october/october octobercms-install && \
+RUN composer create-project october/october octobercms-install --no-interaction --prefer-dist --no-scripts && \
     mv -T /var/www/octobercms-install /var/www/html
-
-# Installs October CMS via composer
-# RUN composer create-project october/october --no-interaction --prefer-dist --no-scripts
 
 # Adds SQLite database
 WORKDIR /var/www/html
@@ -75,8 +73,9 @@ RUN touch storage/database.sqlite && \
     chmod 666 storage/database.sqlite
 
 # Artisan commands
-WORKDIR /var/www/html
-RUN php artisan october:env
+RUN php artisan key:generate && \
+    php artisan package:discover && \
+    php artisan october:env
 
 # Creates cron job for maintenance scripts
 RUN (crontab -l; echo "* * * * * cd /var/www/html;/usr/local/bin/php artisan schedule:run 1>> /dev/null 2>&1") | crontab -
